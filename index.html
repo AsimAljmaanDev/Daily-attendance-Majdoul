@@ -80,7 +80,8 @@ const morning=[
 "منظم مواقف P3","منظم مواقف P4","مسؤول الشحن A","مسؤول الشحن P2"
 ];
 morning.forEach((j,i)=>document.write(
-`<tr><td>${i+1}</td><td>${j}</td><td class="name morning" contenteditable></td><td>7ص–7م</td></tr>`
+`<tr><td>${i+1}</td><td>${j}</td>
+<td class="name morning-name" contenteditable></td><td>7ص–7م</td></tr>`
 ));
 </script>
 <tr><td colspan="3">صباح (من 19)</td><td class="count-cell" id="mCount">0</td></tr>
@@ -95,7 +96,8 @@ const evening=[
 "مسؤول الشحن A","مسؤول الشحن P2","منظم مواقف P1","منظم مواقف P3"
 ];
 evening.forEach((j,i)=>document.write(
-`<tr><td>${i+1}</td><td>${j}</td><td class="name evening" contenteditable></td><td>7م–7ص</td></tr>`
+`<tr><td>${i+1}</td><td>${j}</td>
+<td class="name evening-name" contenteditable></td><td>7م–7ص</td></tr>`
 ));
 </script>
 <tr><td colspan="3">مساء (من 9)</td><td class="count-cell" id="eCount">0</td></tr>
@@ -121,20 +123,27 @@ evening.forEach((j,i)=>document.write(
 
 <script>
 function calc(){
-const m=[...document.querySelectorAll('.morning')].filter(c=>c.innerText.trim()).length;
-const e=[...document.querySelectorAll('.evening')].filter(c=>c.innerText.trim()).length;
-mCount.innerText=m;eCount.innerText=e;
-sm.innerText=`${m} / 19`;se.innerText=`${e} / 9`;st.innerText=`${m+e} / 28`;
+const m=[...document.querySelectorAll('.morning-name')]
+.filter(c=>c.innerText.trim()).length;
+const e=[...document.querySelectorAll('.evening-name')]
+.filter(c=>c.innerText.trim()).length;
+
+mCount.innerText=m;
+eCount.innerText=e;
+sm.innerText=`${m} / 19`;
+se.innerText=`${e} / 9`;
+st.innerText=`${m+e} / 28`;
 }
 document.addEventListener('input',calc);
 
 function exportExcel(){
-let html='<table border="1">';
+let html='';
 document.querySelectorAll('table').forEach(t=>html+=t.outerHTML);
-html+='</table>';
 const blob=new Blob(['\ufeff'+html],{type:'application/vnd.ms-excel'});
 const a=document.createElement('a');
-a.href=URL.createObjectURL(blob);a.download='attendance.xls';a.click();
+a.href=URL.createObjectURL(blob);
+a.download='attendance.xls';
+a.click();
 }
 </script>
 
