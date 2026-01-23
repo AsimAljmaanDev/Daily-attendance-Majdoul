@@ -68,13 +68,21 @@ table { width: 100%; border-collapse: collapse; margin-bottom: 5px; font-size: 1
 th { background: #f8fafc; padding: 6px; border: 1px solid #000; color: #000; }
 td { border: 1px solid #000; padding: 3px; text-align: center; height: 16px; color: #000; }
 
-.name-cell { outline: none; font-weight: 600; }
+/* خلية الاسم قابلة للكتابة */
+.name-input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: inherit;
+    font-size: 10.5px;
+    font-weight: 600;
+    text-align: center;
+    outline: none;
+}
 
-/* ألوان الصفوف عند التعبئة */
-.morning-row.row-filled { background-color: #fff9c4 !important; } /* أصفر فاتح للصباح */
-.evening-row.row-filled { background-color: #e3f2fd !important; } /* أزرق فاتح للمساء */
+.morning-row.row-filled { background-color: #fff9c4 !important; } 
+.evening-row.row-filled { background-color: #e3f2fd !important; } 
 
-/* لإخفاء الصفوف الفارغة برمجياً أثناء التصدير */
 .hide-empty .morning-row:not(.row-filled),
 .hide-empty .evening-row:not(.row-filled) {
     display: none;
@@ -95,6 +103,8 @@ td { border: 1px solid #000; padding: 3px; text-align: center; height: 16px; col
 </style>
 </head>
 <body>
+
+<datalist id="namesList"></datalist>
 
 <div class="sidebar" data-html2canvas-ignore="true">
     <input type="date" id="dateInput" class="date-input" onchange="updateDate()">
@@ -118,7 +128,7 @@ td { border: 1px solid #000; padding: 3px; text-align: center; height: 16px; col
 
     <table class="morning">
         <thead>
-            <tr style="border-top: 3px solid #f59e0b;"><th width="5%">#</th><th>المسمى الوظيفي (Morning)</th><th width="45%">الاسم</th><th width="15%">الوردية</th></tr>
+            <tr style="border-top: 3px solid #f59e0b;"><th width="5%">#</th><th>الموقع (Morning)</th><th width="45%">الاسم</th><th width="15%">الوردية</th></tr>
         </thead>
         <tbody id="morningBody"></tbody>
         <tr style="background:#fcfcfc; font-weight:bold;">
@@ -129,7 +139,7 @@ td { border: 1px solid #000; padding: 3px; text-align: center; height: 16px; col
 
     <table class="evening">
         <thead>
-            <tr style="border-top: 3px solid #3b82f6;"><th width="5%">#</th><th>المسمى الوظيفي (Evening)</th><th width="45%">الاسم</th><th width="15%">الوردية</th></tr>
+            <tr style="border-top: 3px solid #3b82f6;"><th width="5%">#</th><th>الموقع (Evening)</th><th width="45%">الاسم</th><th width="15%">الوردية</th></tr>
         </thead>
         <tbody id="eveningBody"></tbody>
         <tr style="background:#fcfcfc; font-weight:bold;">
@@ -151,6 +161,23 @@ td { border: 1px solid #000; padding: 3px; text-align: center; height: 16px; col
 </div>
 
 <script>
+// مرجع الأسماء حسب الوظيفة
+const staffDatabase = {
+    "مدير مواقف": ["سالم الشمري"],
+    "تغطيات": ["عاصم الجمعان", "الحذيفي المنير", "منتصر الصديق", "سعد السيد", "محمد رشدي"],
+    "فاليه 1": ["بكر عبدالله", "محمود مالك", "جلال المضلعي", "محمد رشدي", "محمد عشري"],
+    "فاليه 2": ["سعيد شريف", "معاذ عبدالحافظ", "شريف سيف الدين", "ابراهيم موسى"],
+    "فاليه 3 - فحص": ["عاصم الجمعان", "الحذيفي المنير", "عيسى مودي", "زياده عبدالرحيم"],
+    "مسؤول الشحن A": ["عبدالواسع سيد احمد", "سامي جعفر", "محمد عشري"],
+    "مسؤول الشحن P2": ["علاء الدين احمد", "علي قايد"],
+    "منظم بوابة 3": ["محمد ابراهيم", "احمد رشدي", "اسماعيل عبدالرحمن", "جلال المضلعي", "وحيد محمد"],
+    "منظم بوابة 5": ["محمد ابراهيم", "احمد رشدي", "اسماعيل عبدالرحمن", "جلال المضلعي", "وحيد محمد"],
+    "منظم مواقف P1": ["ابراهيم موسى", "عيسى مودي", "اسماعيل عبدالرحمن", "سامي جعفر", "عبدالعزيز محمد", "زياده عبدالرحيم", "سعيد شريف", "شريف سيف الدين"],
+    "منظم مواقف P2": ["ابراهيم موسى", "عيسى مودي", "اسماعيل عبدالرحمن", "سامي جعفر", "عبدالعزيز محمد", "زياده عبدالرحيم", "سعيد شريف", "شريف سيف الدين"],
+    "منظم مواقف P3": ["ابراهيم موسى", "عيسى مودي", "اسماعيل عبدالرحمن", "سامي جعفر", "عبدالعزيز محمد", "زياده عبدالرحيم", "سعيد شريف", "شريف سيف الدين"],
+    "منظم مواقف P4": ["ابراهيم موسى", "عيسى مودي", "اسماعيل عبدالرحمن", "سامي جعفر", "عبدالعزيز محمد", "زياده عبدالرحيم", "سعيد شريف", "شريف سيف الدين"]
+};
+
 const morningJobs = ["مدير مواقف","تغطيات","تغطيات","فاليه 1","فاليه 1","فاليه 2","فاليه 3 - فحص","مسؤول الشحن A","مسؤول الشحن P2","منظم بوابة 3","منظم بوابة 5","منظم مواقف P1","منظم مواقف P1","منظم مواقف P1","منظم مواقف P2","منظم مواقف P2","منظم مواقف P2","منظم مواقف P3","منظم مواقف P4"];
 const eveningJobs = ["تغطيات","فاليه 1","فاليه 2","مسؤول الشحن A","مسؤول الشحن P2","منظم بوابة 3","منظم بوابة 5","منظم مواقف P1","منظم مواقف P3"];
 
@@ -161,10 +188,36 @@ window.onload = function() {
 
 function render() {
     let m = "", e = "";
-    morningJobs.forEach((j, i) => m += `<tr class="morning-row"><td>${i+1}</td><td>${j}</td><td class="name-cell" contenteditable="true" oninput="save(this,'m',${i})"></td><td>7 AM</td></tr>`);
-    eveningJobs.forEach((j, i) => e += `<tr class="evening-row"><td>${i+1}</td><td>${j}</td><td class="name-cell" contenteditable="true" oninput="save(this,'e',${i})"></td><td>7 PM</td></tr>`);
+    morningJobs.forEach((j, i) => m += createRow(j, i, 'm', '7 AM'));
+    eveningJobs.forEach((j, i) => e += createRow(j, i, 'e', '7 PM'));
     document.getElementById('morningBody').innerHTML = m;
     document.getElementById('eveningBody').innerHTML = e;
+}
+
+function createRow(job, index, type, shift) {
+    return `<tr class="${type === 'm' ? 'morning-row' : 'evening-row'}">
+        <td>${index + 1}</td>
+        <td class="job-cell">${job}</td>
+        <td>
+            <input list="namesList" class="name-input" 
+                   onfocus="updateDatalist('${job}')" 
+                   oninput="save(this,'${type}',${index})" 
+                   placeholder="اختر أو اكتب...">
+        </td>
+        <td>${shift}</td>
+    </tr>`;
+}
+
+// تحديث قائمة الخيارات بناءً على الوظيفة عند الضغط على الخلية
+function updateDatalist(jobName) {
+    const list = document.getElementById('namesList');
+    list.innerHTML = "";
+    const names = staffDatabase[jobName] || [];
+    names.forEach(name => {
+        let opt = document.createElement('option');
+        opt.value = name;
+        list.appendChild(opt);
+    });
 }
 
 function updateDate() {
@@ -177,9 +230,9 @@ function updateDate() {
     }
 }
 
-function save(cell, t, i) {
-    const val = cell.innerText.trim();
-    val ? cell.parentElement.classList.add('row-filled') : cell.parentElement.classList.remove('row-filled');
+function save(input, t, i) {
+    const val = input.value.trim();
+    val ? input.parentElement.parentElement.classList.add('row-filled') : input.parentElement.parentElement.classList.remove('row-filled');
     localStorage.setItem(`le_${t}_${i}`, val);
     calc();
 }
@@ -197,51 +250,55 @@ function calc() {
 function load() {
     const d = localStorage.getItem('le_d');
     if(d) { document.getElementById('dateInput').value = d; updateDate(); }
-    document.querySelectorAll('.name-cell').forEach((c, i) => {
-        const t = c.closest('tbody').id === 'morningBody' ? 'm' : 'e';
-        const rows = Array.from(c.closest('tbody').querySelectorAll('.name-cell'));
-        const idx = rows.indexOf(c);
-        const v = localStorage.getItem(`le_${t}_${idx}`);
-        if(v) { c.innerText = v; c.parentElement.classList.add('row-filled'); }
+    
+    document.querySelectorAll('.name-input').forEach((input, i) => {
+        const isMorning = input.closest('tbody').id === 'morningBody';
+        const type = isMorning ? 'm' : 'e';
+        const rows = Array.from(input.closest('tbody').querySelectorAll('.name-input'));
+        const idx = rows.indexOf(input);
+        const v = localStorage.getItem(`le_${type}_${idx}`);
+        if(v) { 
+            input.value = v; 
+            input.parentElement.parentElement.classList.add('row-filled'); 
+        }
     });
     calc();
 }
 
 async function captureImage() {
     const area = document.getElementById('printableArea');
-    area.classList.add('hide-empty'); // إخفاء الصفوف الفارغة
-    
+    area.classList.add('hide-empty');
     html2canvas(area, { scale: 2 }).then(canvas => {
         const link = document.createElement('a');
         link.download = `Attendance_${document.getElementById('dateInput').value}.png`;
         link.href = canvas.toDataURL();
         link.click();
-        area.classList.remove('hide-empty'); // إعادتها بعد التصوير
+        area.classList.remove('hide-empty');
     });
 }
 
 async function generatePDF() {
     const area = document.getElementById('printableArea');
-    area.classList.add('hide-empty'); // إخفاء الصفوف الفارغة
-    
+    area.classList.add('hide-empty');
     const opt = { 
         margin: 0, 
         filename: `Attendance_${document.getElementById('dateInput').value}.pdf`, 
         html2canvas: { scale: 3 }, 
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
     };
-    
     await html2pdf().set(opt).from(area).save();
-    area.classList.remove('hide-empty'); // إعادتها بعد الحفظ
+    area.classList.remove('hide-empty');
 }
 
 function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
 function resetPage() { if(confirm("بدء يوم جديد؟ سيتم مسح كافة الأسماء.")) { localStorage.clear(); location.reload(); } }
+
 function exportExcel() {
-    let csv = "\ufeff# , المسمى الوظيفي , الاسم , الفترة\n";
+    let csv = "\ufeff# , الموقع , الاسم , الفترة\n";
     document.querySelectorAll('.row-filled').forEach(tr => {
         const tds = tr.querySelectorAll('td');
-        csv += `${tds[0].innerText},${tds[1].innerText},${tds[2].innerText},${tds[3].innerText}\n`;
+        const nameVal = tr.querySelector('.name-input').value;
+        csv += `${tds[0].innerText},${tds[1].innerText},${nameVal},${tds[3].innerText}\n`;
     });
     const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
     const a = document.createElement('a');
