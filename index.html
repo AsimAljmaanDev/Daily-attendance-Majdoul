@@ -8,56 +8,140 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <style>
+/* Base Variables & Dark Mode */
 :root { 
     --primary: #c7a35a; 
     --secondary: #1e293b;
     --bg-page: #f1f5f9;
     --card-bg: #ffffff;
+    --text-main: #333;
+    --glass-bg: rgba(255, 255, 255, 0.2); /* Light glass */
+    --glass-border: rgba(255, 255, 255, 0.3);
+    --glass-shadow: rgba(0, 0, 0, 0.1);
 }
 
 body.dark-mode {
     --bg-page: #0f172a;
     --card-bg: #1e293b;
+    --text-main: #e2e8f0;
+    --glass-bg: rgba(255, 255, 255, 0.05); /* Dark glass */
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --glass-shadow: rgba(0, 0, 0, 0.3);
 }
 
 body { 
     font-family: 'Segoe UI', Tahoma, sans-serif; 
     background-color: var(--bg-page); 
-    margin: 0; transition: 0.3s;
+    margin: 0; 
+    transition: background-color 0.3s ease, color 0.3s ease;
+    color: var(--text-main);
 }
 
+/* Liquid Glass Sidebar Design */
 .sidebar {
-    position: fixed; left: 20px; top: 50%; transform: translateY(-50%);
-    background: var(--card-bg); padding: 15px; border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    display: flex; flex-direction: column; gap: 8px; z-index: 999; width: 160px;
+    position: fixed; 
+    left: 20px; 
+    top: 50%; 
+    transform: translateY(-50%);
+    background: var(--glass-bg); /* Use glass background */
+    backdrop-filter: blur(10px); /* Glass blur effect */
+    border: 1px solid var(--glass-border); /* Subtle border */
+    border-radius: 20px;
+    padding: 15px; 
+    box-shadow: 0 10px 30px var(--glass-shadow); /* Soft shadow */
+    display: flex; 
+    flex-direction: column; 
+    gap: 10px; /* Increased gap for better spacing */
+    z-index: 999; 
+    width: 180px; /* Slightly wider for better button fit */
+    transition: all 0.3s ease;
 }
 
+.sidebar.mobile-view {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    top: unset; /* Override top:50% */
+    width: 90%; /* Wider on mobile */
+    flex-direction: row; /* Horizontal layout for mobile */
+    flex-wrap: wrap; /* Allow buttons to wrap */
+    justify-content: center;
+    padding: 10px;
+}
+
+/* Liquid Glass Buttons Design */
 .btn {
-    border: none; padding: 10px; border-radius: 10px; cursor: pointer;
-    font-weight: 600; font-size: 11px; color: white; transition: 0.2s;
-    display: flex; align-items: center; justify-content: center; gap: 5px;
+    border: none; 
+    padding: 12px; /* Slightly larger padding */
+    border-radius: 12px; /* More rounded corners */
+    cursor: pointer;
+    font-weight: 600; 
+    font-size: 12px; /* Slightly larger font */
+    color: white; 
+    transition: all 0.2s ease;
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    gap: 8px; /* Increased gap for icon and text */
+    background: rgba(var(--btn-color), 0.7); /* Semi-transparent color */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1); /* Subtle button shadow */
+    backdrop-filter: blur(5px); /* Apply blur to button */
 }
-.btn:hover { transform: scale(1.05); opacity: 0.9; }
-.btn-image { background: #6366f1; }
-.btn-pdf { background: var(--primary); }
-.btn-excel { background: #10b981; }
-.btn-dark { background: #64748b; }
-.btn-new { background: #ef4444; }
+.btn:hover { 
+    transform: translateY(-2px) scale(1.02); /* Lift and slightly scale on hover */
+    opacity: 1; 
+    box-shadow: 0 6px 15px rgba(0,0,0,0.2); /* More prominent shadow on hover */
+}
+.btn:active {
+    transform: translateY(0) scale(0.98);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
 
-.date-input { padding: 8px; border: 1px solid #ddd; border-radius: 8px; width: 100%; box-sizing: border-box; background: var(--card-bg); color: var(--text-main); font-size: 11px; }
+.btn-image { --btn-color: 99, 102, 241; /* Indigo */ background: rgba(99, 102, 241, 0.7); }
+.btn-pdf { --btn-color: 199, 163, 90; /* Primary */ background: rgba(199, 163, 90, 0.7); }
+.btn-excel { --btn-color: 16, 185, 129; /* Emerald */ background: rgba(16, 185, 129, 0.7); }
+.btn-dark { --btn-color: 100, 116, 139; /* Slate */ background: rgba(100, 116, 139, 0.7); }
+.btn-new { --btn-color: 239, 68, 68; /* Red */ background: rgba(239, 68, 68, 0.7); }
+.btn-toggle-view { --btn-color: 6, 182, 212; /* Cyan */ background: rgba(6, 182, 212, 0.7); }
 
+
+.date-input { 
+    padding: 10px; 
+    border: 1px solid var(--glass-border); /* Glassy border */
+    border-radius: 10px; 
+    width: 100%; 
+    box-sizing: border-box; 
+    background: rgba(255, 255, 255, 0.1); /* Slightly transparent input */
+    color: var(--text-main); 
+    font-size: 12px;
+    transition: all 0.2s ease;
+}
+.date-input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.2);
+}
+
+/* Page Container (unchanged, but ensuring it sits well with new sidebar) */
 .page-container {
     width: 210mm;
     min-height: 297mm;
     margin: 10px auto;
-    background: white !important;
+    background: white !important; /* Keep white for print/PDF consistency */
     padding: 8mm 12mm;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     box-shadow: 0 0 20px rgba(0,0,0,0.05);
+    transition: margin-right 0.3s ease; /* For mobile view shift */
 }
+
+/* Adjust page container margin when sidebar is on mobile */
+.mobile-view-active .page-container {
+    margin-top: 100px; /* Make space for mobile sidebar at bottom */
+    margin-bottom: 100px;
+}
+
 
 .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary); padding-bottom: 10px; margin-bottom: 8px; }
 .header img { height: 45px; }
@@ -68,7 +152,6 @@ table { width: 100%; border-collapse: collapse; margin-bottom: 5px; font-size: 1
 th { background: #f8fafc; padding: 6px; border: 1px solid #000; color: #000; }
 td { border: 1px solid #000; padding: 3px; text-align: center; height: 16px; color: #000; }
 
-/* خلية الاسم قابلة للكتابة */
 .name-input {
     width: 100%;
     border: none;
@@ -100,6 +183,22 @@ td { border: 1px solid #000; padding: 3px; text-align: center; height: 16px; col
 .signature { text-align: center; width: 40%; border-top: 1px solid #000; padding-top: 5px; font-size: 12px; font-weight: bold; }
 
 @media print { .sidebar { display: none; } }
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .sidebar:not(.mobile-view) { /* Hide desktop sidebar when screen is small, unless mobile view is active */
+        display: none;
+    }
+    .sidebar.mobile-view {
+        display: flex; /* Always show mobile sidebar when active */
+    }
+    .page-container {
+        width: 95%; /* Make page wider on small screens */
+        padding: 5mm;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
 </style>
 </head>
 <body>
@@ -112,6 +211,7 @@ td { border: 1px solid #000; padding: 3px; text-align: center; height: 16px; col
     <button class="btn btn-pdf" onclick="generatePDF()">📄 PDF (الحاضرين فقط)</button>
     <button class="btn btn-excel" onclick="exportExcel()">📊 ملف Excel</button>
     <button class="btn btn-dark" onclick="toggleDarkMode()">🌙 وضع ليلي</button>
+    <button class="btn btn-toggle-view" onclick="toggleMobileView()">📱 وضع الجوال</button>
     <button class="btn btn-new" onclick="resetPage()">🔄 يوم جديد</button>
 </div>
 
@@ -184,6 +284,12 @@ const eveningJobs = ["تغطيات","فاليه 1","فاليه 2","مسؤول ا
 window.onload = function() {
     render(); load();
     if(!document.getElementById('dateInput').value) { document.getElementById('dateInput').valueAsDate = new Date(); updateDate(); }
+    // Check initial screen size and apply mobile view if needed
+    if (window.innerWidth <= 768) {
+        document.body.classList.add('mobile-view-active');
+        document.querySelector('.sidebar').classList.add('mobile-view');
+        document.querySelector('.btn-toggle-view').innerHTML = '💻 وضع سطح المكتب';
+    }
 };
 
 function render() {
@@ -305,6 +411,22 @@ function exportExcel() {
     a.href = URL.createObjectURL(blob);
     a.download = "Attendance.csv";
     a.click();
+}
+
+// Function to toggle between mobile and desktop view
+function toggleMobileView() {
+    const body = document.body;
+    const sidebar = document.querySelector('.sidebar');
+    const toggleButton = document.querySelector('.btn-toggle-view');
+
+    body.classList.toggle('mobile-view-active');
+    sidebar.classList.toggle('mobile-view');
+
+    if (body.classList.contains('mobile-view-active')) {
+        toggleButton.innerHTML = '💻 وضع سطح المكتب';
+    } else {
+        toggleButton.innerHTML = '📱 وضع الجوال';
+    }
 }
 </script>
 </body>
