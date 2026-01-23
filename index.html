@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Link Expert - Modern Attendance</title>
+<title>Link Expert - Smart Attendance</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
@@ -26,7 +26,6 @@ body {
     margin: 0; transition: 0.3s;
 }
 
-/* Sidebar */
 .sidebar {
     position: fixed; left: 20px; top: 50%; transform: translateY(-50%);
     background: var(--card-bg); padding: 15px; border-radius: 20px;
@@ -40,7 +39,7 @@ body {
     display: flex; align-items: center; justify-content: center; gap: 5px;
 }
 .btn:hover { transform: scale(1.05); opacity: 0.9; }
-.btn-image { background: #6366f1; } /* لون جديد لالتقاط الصورة */
+.btn-image { background: #6366f1; }
 .btn-pdf { background: var(--primary); }
 .btn-excel { background: #10b981; }
 .btn-dark { background: #64748b; }
@@ -48,7 +47,6 @@ body {
 
 .date-input { padding: 8px; border: 1px solid #ddd; border-radius: 8px; width: 100%; box-sizing: border-box; background: var(--card-bg); color: var(--text-main); font-size: 11px; }
 
-/* A4 Optimized Container */
 .page-container {
     width: 210mm;
     min-height: 297mm;
@@ -66,15 +64,22 @@ body {
 .header-center h2 { margin: 0; font-size: 18px; color: var(--secondary); }
 .date-display { font-size: 12px; font-weight: bold; color: #64748b; margin-top: 3px; direction: ltr; }
 
-/* Mini Compact Tables */
 table { width: 100%; border-collapse: collapse; margin-bottom: 5px; font-size: 10.5px; }
 th { background: #f8fafc; padding: 6px; border: 1px solid #000; color: #000; }
 td { border: 1px solid #000; padding: 3px; text-align: center; height: 16px; color: #000; }
 
 .name-cell { outline: none; font-weight: 600; }
-.row-filled { background: #fdfaf3 !important; }
 
-/* Modern Widgets */
+/* ألوان الصفوف عند التعبئة */
+.morning-row.row-filled { background-color: #fff9c4 !important; } /* أصفر فاتح للصباح */
+.evening-row.row-filled { background-color: #e3f2fd !important; } /* أزرق فاتح للمساء */
+
+/* لإخفاء الصفوف الفارغة برمجياً أثناء التصدير */
+.hide-empty .morning-row:not(.row-filled),
+.hide-empty .evening-row:not(.row-filled) {
+    display: none;
+}
+
 .summary-container { display: flex; justify-content: space-between; gap: 10px; margin-top: 5px; }
 .sum-box { 
     flex: 1; padding: 10px; border-radius: 12px; text-align: center;
@@ -93,8 +98,8 @@ td { border: 1px solid #000; padding: 3px; text-align: center; height: 16px; col
 
 <div class="sidebar" data-html2canvas-ignore="true">
     <input type="date" id="dateInput" class="date-input" onchange="updateDate()">
-    <button class="btn btn-image" onclick="captureImage()">📸 التقاط صورة (PNG)</button>
-    <button class="btn btn-pdf" onclick="generatePDF()">📄 حفظ PDF</button>
+    <button class="btn btn-image" onclick="captureImage()">📸 صورة (الحاضرين فقط)</button>
+    <button class="btn btn-pdf" onclick="generatePDF()">📄 PDF (الحاضرين فقط)</button>
     <button class="btn btn-excel" onclick="exportExcel()">📊 ملف Excel</button>
     <button class="btn btn-dark" onclick="toggleDarkMode()">🌙 وضع ليلي</button>
     <button class="btn btn-new" onclick="resetPage()">🔄 يوم جديد</button>
@@ -156,8 +161,8 @@ window.onload = function() {
 
 function render() {
     let m = "", e = "";
-    morningJobs.forEach((j, i) => m += `<tr><td>${i+1}</td><td>${j}</td><td class="name-cell" contenteditable="true" oninput="save(this,'m',${i})"></td><td>7 AM</td></tr>`);
-    eveningJobs.forEach((j, i) => e += `<tr><td>${i+1}</td><td>${j}</td><td class="name-cell" contenteditable="true" oninput="save(this,'e',${i})"></td><td>7 PM</td></tr>`);
+    morningJobs.forEach((j, i) => m += `<tr class="morning-row"><td>${i+1}</td><td>${j}</td><td class="name-cell" contenteditable="true" oninput="save(this,'m',${i})"></td><td>7 AM</td></tr>`);
+    eveningJobs.forEach((j, i) => e += `<tr class="evening-row"><td>${i+1}</td><td>${j}</td><td class="name-cell" contenteditable="true" oninput="save(this,'e',${i})"></td><td>7 PM</td></tr>`);
     document.getElementById('morningBody').innerHTML = m;
     document.getElementById('eveningBody').innerHTML = e;
 }
@@ -202,24 +207,48 @@ function load() {
     calc();
 }
 
-function captureImage() {
+async function captureImage() {
     const area = document.getElementById('printableArea');
+    area.classList.add('hide-empty'); // إخفاء الصفوف الفارغة
+    
     html2canvas(area, { scale: 2 }).then(canvas => {
         const link = document.createElement('a');
         link.download = `Attendance_${document.getElementById('dateInput').value}.png`;
         link.href = canvas.toDataURL();
         link.click();
+        area.classList.remove('hide-empty'); // إعادتها بعد التصوير
     });
 }
 
-function generatePDF() {
-    const opt = { margin: 0, filename: `Report.pdf`, html2canvas: { scale: 3 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } };
-    html2pdf().set(opt).from(document.getElementById('printableArea')).save();
+async function generatePDF() {
+    const area = document.getElementById('printableArea');
+    area.classList.add('hide-empty'); // إخفاء الصفوف الفارغة
+    
+    const opt = { 
+        margin: 0, 
+        filename: `Attendance_${document.getElementById('dateInput').value}.pdf`, 
+        html2canvas: { scale: 3 }, 
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
+    };
+    
+    await html2pdf().set(opt).from(area).save();
+    area.classList.remove('hide-empty'); // إعادتها بعد الحفظ
 }
 
 function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
-function resetPage() { if(confirm("بدء يوم جديد؟")) { localStorage.clear(); location.reload(); } }
-function exportExcel() { /* نفس الكود السابق */ }
+function resetPage() { if(confirm("بدء يوم جديد؟ سيتم مسح كافة الأسماء.")) { localStorage.clear(); location.reload(); } }
+function exportExcel() {
+    let csv = "\ufeff# , المسمى الوظيفي , الاسم , الفترة\n";
+    document.querySelectorAll('.row-filled').forEach(tr => {
+        const tds = tr.querySelectorAll('td');
+        csv += `${tds[0].innerText},${tds[1].innerText},${tds[2].innerText},${tds[3].innerText}\n`;
+    });
+    const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = "Attendance.csv";
+    a.click();
+}
 </script>
 </body>
 </html>
