@@ -2,203 +2,297 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>كشف الحضور الفعلي</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Link Expert Attendance</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
 <style>
-    /* تنسيقات الشاشة العامة */
-    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f0f0; padding: 20px; }
-    
-    /* الورقة */
-    .page {
-        background: white;
-        width: 210mm;
-        min-height: 297mm;
-        margin: auto;
-        padding: 10mm;
-        box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        box-sizing: border-box;
-    }
+/* إعدادات الخط والأساسيات */
+:root { --primary: #c7a35a; --dark: #333; }
+body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f4f4f4; margin: 0; padding: 0; }
 
-    /* الهيدر */
-    .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #c7a35a; padding-bottom: 10px; margin-bottom: 10px; }
-    .header img { height: 60px; }
-    .center-info { text-align: center; font-weight: bold; }
-    
-    /* الجداول */
-    table { width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 12px; }
-    th, td { border: 1px solid #000; padding: 5px; text-align: center; }
-    
-    /* ألوان العناوين */
-    .morning-header { background: #ffe699; }
-    .evening-header { background: #cfe2f3; }
+/* 1. القائمة الجانبية (ثابتة يسار الشاشة) */
+.sidebar {
+    position: fixed; left: 20px; top: 50%; transform: translateY(-50%);
+    background: white; padding: 15px; border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+    display: flex; flex-direction: column; gap: 12px; z-index: 999;
+    width: 160px;
+}
+.sidebar h3 { margin: 0 0 10px 0; font-size: 14px; text-align: center; color: var(--dark); border-bottom: 2px solid #eee; padding-bottom: 5px; }
+.btn {
+    border: none; padding: 12px; border-radius: 6px; cursor: pointer;
+    font-weight: bold; font-size: 13px; color: white; display: flex; align-items: center; justify-content: center; gap: 8px;
+    transition: 0.2s;
+}
+.btn:hover { opacity: 0.9; transform: scale(1.02); }
+.btn-pdf { background: #b30b00; }  /* أحمر للـ PDF */
+.btn-excel { background: #198754; } /* أخضر للإكسل */
+.btn-new { background: #0d6efd; }   /* أزرق لجديد */
+.date-input { padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-family: inherit; }
 
-    /* حقل الاسم */
-    .name-input { 
-        width: 95%; border: none; outline: none; 
-        font-family: inherit; font-size: inherit; text-align: center;
-        background: #fffbe6; padding: 5px;
-    }
-    .name-input:focus { background: #e0f7fa; }
+/* 2. تصميم ورقة الـ A4 (مضغوط ليتسع للجميع) */
+.page-container {
+    width: 210mm;
+    min-height: 297mm; /* ارتفاع A4 القياسي */
+    margin: 20px auto;
+    background: white;
+    padding: 10mm 10mm 5mm 10mm; /* حواشٍ ضيقة */
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    box-sizing: border-box;
+    position: relative;
+}
 
-    /* الإحصائيات والتواقيع */
-    .summary-box { border: 2px solid #333; padding: 10px; margin-top: 15px; display: flex; justify-content: space-around; font-weight: bold; background: #f9f9f9; }
-    .footer { display: flex; justify-content: space-between; margin-top: 30px; }
-    .sig-box { text-align: center; width: 40%; border-top: 1px solid #000; padding-top: 5px; font-weight: bold; }
+/* الهيدر المضغوط */
+.header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary); padding-bottom: 5px; margin-bottom: 5px; }
+.header img { height: 50px; object-fit: contain; } /* تصغير اللوجو قليلاً */
+.header-center { text-align: center; line-height: 1.2; }
+.header-center h2 { margin: 0; font-size: 16px; color: var(--dark); }
+.header-center p { margin: 0; font-size: 12px; color: #666; }
+.date-display { font-size: 14px; font-weight: bold; margin-top: 2px; color: #000; direction: ltr; } /* التاريخ بالإنجليزية */
 
-    /* زر الطباعة */
-    .print-btn {
-        position: fixed; left: 20px; bottom: 20px;
-        background: #007bff; color: white; padding: 15px 25px;
-        border: none; border-radius: 50px; font-weight: bold; cursor: pointer;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-    }
-    .print-btn:hover { background: #0056b3; }
+/* الجداول المضغوطة جداً */
+table { width: 100%; border-collapse: collapse; margin-bottom: 5px; font-size: 11px; } /* خط صغير */
+th, td { border: 1px solid #999; padding: 2px 4px; text-align: center; height: 20px; } /* ارتفاع سطر ثابت وصغير */
+th { background: #f0f0f0; font-weight: bold; font-size: 11px; }
 
-    /* ========================================= */
-    /* أهم جزء: إعدادات الطباعة للإخفاء والظهور */
-    /* ========================================= */
-    @media print {
-        body { background: white; padding: 0; margin: 0; }
-        .page { box-shadow: none; margin: 0; width: 100%; height: auto; padding: 5mm; border: none; }
-        .print-btn, .date-picker-container { display: none !important; }
-        
-        /* السحر هنا: إخفاء الصفوف الفارغة */
-        tr.empty-row { display: none !important; }
-        
-        /* إخفاء حدود الجدول الفارغة إذا لم يكن هناك بيانات */
-        table:empty { display: none; }
-        
-        /* إزالة خلفية حقل الإدخال ليظهر كأنه نص مطبوع */
-        .name-input { background: transparent; }
-        
-        /* ضمان صفحة واحدة */
-        .page { page-break-after: avoid; }
-    }
+/* ألوان */
+.morning th { background: #fff2cc !important; }
+.evening th { background: #dae8fc !important; }
+.row-filled-m { background: #fffae6; }
+.row-filled-e { background: #f1f8ff; }
+.name-cell { outline: none; font-weight: bold; width: 45%; }
+.name-cell:focus { background: #e8f0fe; }
+
+/* الفوتر والملخص */
+.summary-container { display: flex; justify-content: space-between; gap: 5px; margin-top: 5px; }
+.sum-box { border: 1px solid #000; flex: 1; text-align: center; padding: 2px; font-size: 11px; font-weight: bold; background: #fafafa; }
+
+.footer { display: flex; justify-content: space-between; margin-top: 15px; }
+.signature { text-align: center; width: 40%; border-top: 1px solid #000; padding-top: 5px; font-size: 12px; font-weight: bold; }
+
+/* إخفاء العناصر عند الطباعة */
+.no-print { display: none; }
 </style>
 </head>
 <body>
 
-<button class="print-btn" onclick="window.print()">🖨️ طباعة (المسجلين فقط)</button>
+<div class="sidebar" data-html2canvas-ignore="true">
+    <h3>لوحة التحكم</h3>
+    <input type="date" id="dateInput" class="date-input" onchange="updateDate()">
+    
+    <button class="btn btn-pdf" onclick="generatePDF()">
+        <span>📄 PDF</span>
+    </button>
+    <button class="btn btn-excel" onclick="exportExcel()">
+        <span>📊 Excel</span>
+    </button>
+    <button class="btn btn-new" onclick="resetPage()">
+        <span>🔄 Renew</span>
+    </button>
+    <div id="status" style="font-size:10px; color:green; text-align:center; margin-top:5px;"></div>
+</div>
 
-<div class="page">
+<div class="page-container" id="printableArea">
+    
     <div class="header">
-        <img src="majdoul.png" alt="Majdoul"> <div class="center-info">
-            <div>شركة LINK EXPERT</div>
-            <div>تقرير الحضور الفعلي</div>
-            <div class="date-picker-container" style="margin-top:5px;">
-                <input type="date" id="dateSelector" onchange="updateDateDisplay()">
-            </div>
-            <div id="dateText" style="margin-top:5px;">--/--/----</div>
+        <img src="majdoul.png" alt="Logo">
+        <div class="header-center">
+            <h2>LINK EXPERT COMPANY</h2>
+            <p>Daily Attendance Sheet</p>
+            <div class="date-display" id="dateDisplay">DD / MM / YYYY</div>
         </div>
-        <img src="linkexpert.png" alt="LinkExpert"> </div>
+        <img src="linkexpert.png" alt="Logo">
+    </div>
 
-    <table id="tableMorning">
+    <table class="morning">
         <thead>
-            <tr class="morning-header">
-                <th width="5%">#</th>
-                <th width="40%">المسمى الوظيفي</th>
-                <th width="40%">الاسم</th>
-                <th width="15%">الفترة</th>
-            </tr>
+            <tr><th width="5%">#</th><th width="35%">Position</th><th>Name</th><th width="15%">Shift</th></tr>
         </thead>
         <tbody id="morningBody"></tbody>
+        <tfoot>
+            <tr><td colspan="3" style="text-align:left; padding-left:5px;">Total Morning:</td><td id="mCount">0</td></tr>
+        </tfoot>
     </table>
 
-    <table id="tableEvening">
+    <table class="evening">
         <thead>
-            <tr class="evening-header">
-                <th width="5%">#</th>
-                <th width="40%">المسمى الوظيفي</th>
-                <th width="40%">الاسم</th>
-                <th width="15%">الفترة</th>
-            </tr>
+            <tr><th width="5%">#</th><th width="35%">Position</th><th>Name</th><th width="15%">Shift</th></tr>
         </thead>
         <tbody id="eveningBody"></tbody>
+        <tfoot>
+            <tr><td colspan="3" style="text-align:left; padding-left:5px;">Total Evening:</td><td id="eCount">0</td></tr>
+        </tfoot>
     </table>
 
-    <div class="summary-box">
-        <span>صباح: <span id="countM">0</span></span>
-        <span>|</span>
-        <span>مساء: <span id="countE">0</span></span>
-        <span>|</span>
-        <span>الإجمالي: <span id="countTotal">0</span></span>
+    <div class="summary-container">
+        <div class="sum-box">Morning: <span id="sm">0/19</span></div>
+        <div class="sum-box">Evening: <span id="se">0/9</span></div>
+        <div class="sum-box">Total: <span id="st">0/28</span></div>
     </div>
 
     <div class="footer">
-        <div class="sig-box">مسؤول العلاقات العامة<br>سلمان الحمود</div>
-        <div class="sig-box">مدير المشروع<br>سالم الشمري</div>
+        <div class="signature">PR Officer<br>Salman Al-Homoud</div>
+        <div class="signature">Project Manager<br>Salem Al-Shammari</div>
     </div>
+
 </div>
 
 <script>
-    // البيانات
-    const jobsMorning = ["مدير المواقف","تغطيات","تغطيات","فاليه 1","فاليه 1","فاليه 2","فاليه 3 - فحص","منظم بوابة 3","منظم بوابة 5","منظم مواقف P1","منظم مواقف P1","منظم مواقف P1","منظم مواقف P2","منظم مواقف P2","منظم مواقف P2","منظم مواقف P3","منظم مواقف P4","مسؤول الشحن A","مسؤول الشحن P2"];
-    const jobsEvening = ["تغطيات","فاليه 1","فاليه 2","منظم بوابة 3","منظم بوابة 5","مسؤول الشحن A","مسؤول الشحن P2","منظم مواقف P1","منظم مواقف P3"];
+// الوظائف
+const jobsM = ["Parking Manager","Coverage","Coverage","Valet 1","Valet 1","Valet 2","Valet 3 - Check","Gate 3 Org","Gate 5 Org","Parking P1","Parking P1","Parking P1","Parking P2","Parking P2","Parking P2","Parking P3","Parking P4","Charging A","Charging P2"];
+const jobsE = ["Coverage","Valet 1","Valet 2","Gate 3 Org","Gate 5 Org","Charging A","Charging P2","Parking P1","Parking P3"];
 
-    // بناء الجداول
-    function init() {
-        buildTable('morningBody', jobsMorning, '7ص - 7م');
-        buildTable('eveningBody', jobsEvening, '7م - 7ص');
-        updateDateDisplay();
+// عند التحميل
+window.onload = function() {
+    renderTables();
+    loadFromStorage();
+    // تعيين تاريخ اليوم إذا لم يوجد
+    if(!document.getElementById('dateInput').value) {
+        document.getElementById('dateInput').valueAsDate = new Date();
+        updateDate();
+    }
+};
+
+function renderTables() {
+    // الصباح
+    let mHtml = "";
+    jobsM.forEach((job, i) => {
+        mHtml += `<tr>
+            <td>${i+1}</td><td>${job}</td>
+            <td class="name-cell" contenteditable="true" oninput="saveData(this, 'm', ${i})"></td>
+            <td>7AM - 7PM</td>
+        </tr>`;
+    });
+    document.getElementById('morningBody').innerHTML = mHtml;
+
+    // المساء
+    let eHtml = "";
+    jobsE.forEach((job, i) => {
+        eHtml += `<tr>
+            <td>${i+1}</td><td>${job}</td>
+            <td class="name-cell" contenteditable="true" oninput="saveData(this, 'e', ${i})"></td>
+            <td>7PM - 7AM</td>
+        </tr>`;
+    });
+    document.getElementById('eveningBody').innerHTML = eHtml;
+}
+
+// تحديث التاريخ (ميلادي)
+function updateDate() {
+    const input = document.getElementById('dateInput').value;
+    if(input) {
+        const d = new Date(input);
+        // تنسيق ميلادي واضح: 24 January 2026
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('dateDisplay').innerText = d.toLocaleDateString('en-US', options);
+        localStorage.setItem('le_date', input);
+    }
+}
+
+// حفظ البيانات وتلوين الصفوف
+function saveData(cell, type, index) {
+    const val = cell.innerText.trim();
+    const row = cell.parentElement;
+    
+    // تلوين
+    if(val) row.classList.add(type === 'm' ? 'row-filled-m' : 'row-filled-e');
+    else row.classList.remove('row-filled-m', 'row-filled-e');
+
+    // حفظ
+    localStorage.setItem(`le_${type}_${index}`, val);
+    calc();
+}
+
+// استرجاع
+function loadFromStorage() {
+    // التاريخ
+    const savedDate = localStorage.getItem('le_date');
+    if(savedDate) {
+        document.getElementById('dateInput').value = savedDate;
+        updateDate();
     }
 
-    function buildTable(tbodyId, jobs, time) {
-        const tbody = document.getElementById(tbodyId);
-        let html = '';
-        jobs.forEach((job, index) => {
-            // نضيف كلاس "empty-row" افتراضياً لأن الاسم فارغ
-            html += `
-            <tr class="empty-row" id="${tbodyId}-row-${index}">
-                <td>${index + 1}</td>
-                <td>${job}</td>
-                <td><input type="text" class="name-input" placeholder="اكتب الاسم..." oninput="checkRow(this)"></td>
-                <td>${time}</td>
-            </tr>`;
-        });
-        tbody.innerHTML = html;
+    // الأسماء
+    const cellsM = document.querySelectorAll('#morningBody .name-cell');
+    cellsM.forEach((cell, i) => {
+        const val = localStorage.getItem(`le_m_${i}`);
+        if(val) { cell.innerText = val; saveData(cell, 'm', i); }
+    });
+
+    const cellsE = document.querySelectorAll('#eveningBody .name-cell');
+    cellsE.forEach((cell, i) => {
+        const val = localStorage.getItem(`le_e_${i}`);
+        if(val) { cell.innerText = val; saveData(cell, 'e', i); }
+    });
+    calc();
+}
+
+// الحسابات
+function calc() {
+    const m = document.querySelectorAll('.row-filled-m').length;
+    const e = document.querySelectorAll('.row-filled-e').length;
+    document.getElementById('mCount').innerText = m;
+    document.getElementById('eCount').innerText = e;
+    document.getElementById('sm').innerText = `${m} / 19`;
+    document.getElementById('se').innerText = `${e} / 9`;
+    document.getElementById('st').innerText = `${m+e} / 28`;
+}
+
+// زر Reset
+function resetPage() {
+    if(confirm("Start a new day? All names will be cleared.")) {
+        localStorage.clear();
+        location.reload();
     }
+}
 
-    // هذه الدالة تعمل عند الكتابة
-    function checkRow(input) {
-        const row = input.closest('tr');
-        const name = input.value.trim();
+// تصدير PDF (الإصلاح الجذري)
+function generatePDF() {
+    const element = document.getElementById('printableArea');
+    
+    // إعدادات محسنة لمنع تلف الملف
+    const opt = {
+        margin:       0, // إلغاء الهوامش لأننا صممنا الصفحة بالكامل
+        filename:     `Attendance_${document.getElementById('dateInput').value}.pdf`,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { 
+            scale: 2, // دقة عالية
+            useCORS: true, 
+            scrollY: 0 
+        },
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
 
-        // إذا كان هناك اسم، نحذف كلاس "empty-row" فيظهر في الطباعة
-        // إذا كان فارغاً، نضيف الكلاس فيختفي من الطباعة
-        if (name.length > 0) {
-            row.classList.remove('empty-row');
-            row.style.backgroundColor = input.closest('tbody').id === 'morningBody' ? '#fff9db' : '#e3f2fd';
-        } else {
-            row.classList.add('empty-row');
-            row.style.backgroundColor = 'transparent';
-        }
-        
-        calcTotals();
-    }
+    // إخفاء الزر مؤقتاً أثناء التوليد (احتياط)
+    const btn = document.querySelector('.btn-pdf');
+    btn.innerText = "⏳ Processing...";
+    
+    html2pdf().set(opt).from(element).save().then(() => {
+        btn.innerText = "📄 PDF";
+    });
+}
 
-    function calcTotals() {
-        // نحسب فقط الصفوف التي لا تحمل كلاس empty-row
-        const m = document.querySelectorAll('#morningBody tr:not(.empty-row)').length;
-        const e = document.querySelectorAll('#eveningBody tr:not(.empty-row)').length;
-        
-        document.getElementById('countM').innerText = m;
-        document.getElementById('countE').innerText = e;
-        document.getElementById('countTotal').innerText = m + e;
-    }
+// تصدير Excel
+function exportExcel() {
+    let csv = "\ufeffPosition,Name,Shift\n";
+    // صباح
+    document.querySelectorAll('#morningBody tr').forEach(tr => {
+        const tds = tr.querySelectorAll('td');
+        if(tds[2].innerText.trim()) csv += `"${tds[1].innerText}","${tds[2].innerText}","Morning"\n`;
+    });
+    // مساء
+    document.querySelectorAll('#eveningBody tr').forEach(tr => {
+        const tds = tr.querySelectorAll('td');
+        if(tds[2].innerText.trim()) csv += `"${tds[1].innerText}","${tds[2].innerText}","Evening"\n`;
+    });
 
-    function updateDateDisplay() {
-        const input = document.getElementById('dateSelector');
-        const text = document.getElementById('dateText');
-        if(input.value) {
-            text.innerText = input.value;
-        } else {
-            const today = new Date().toISOString().split('T')[0];
-            input.value = today;
-            text.innerText = today;
-        }
-    }
-
-    // تشغيل عند التحميل
-    init();
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "Attendance.csv";
+    link.click();
+}
 </script>
 
 </body>
