@@ -8,6 +8,13 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <style>
+    .temp-text {
+    display: block;
+    width: 100%;
+    text-align: center;
+    font-size: 10.5px;
+    color: #000;
+}
 /* Base Variables & Dark Mode */
 :root { 
     --primary: #c7a35a; 
@@ -373,29 +380,36 @@ function load() {
 
 async function captureImage() {
     const area = document.getElementById('printableArea');
+    
+    // 1. وضع علامة "إخفاء الفارغ" وتحويل المدخلات لنص ثابت مؤقتاً
     area.classList.add('hide-empty');
-    html2canvas(area, { scale: 2 }).then(canvas => {
+    const inputs = area.querySelectorAll('.name-input');
+    inputs.forEach(input => {
+        const span = document.createElement('span');
+        span.className = 'temp-text';
+        span.innerText = input.value;
+        span.style.fontWeight = '600';
+        input.style.display = 'none';
+        input.parentNode.appendChild(span);
+    });
+
+    // 2. عملية الالتقاط
+    html2canvas(area, { 
+        scale: 3, // زيادة الدقة لضمان الوضوح
+        useCORS: true,
+        backgroundColor: "#ffffff" 
+    }).then(canvas => {
         const link = document.createElement('a');
         link.download = `Attendance_${document.getElementById('dateInput').value}.png`;
-        link.href = canvas.toDataURL();
+        link.href = canvas.toDataURL("image/png");
         link.click();
+
+        // 3. إعادة الحقول كما كانت
         area.classList.remove('hide-empty');
+        area.querySelectorAll('.temp-text').forEach(el => el.remove());
+        inputs.forEach(input => input.style.display = 'block');
     });
 }
-
-async function generatePDF() {
-    const area = document.getElementById('printableArea');
-    area.classList.add('hide-empty');
-    const opt = { 
-        margin: 0, 
-        filename: `Attendance_${document.getElementById('dateInput').value}.pdf`, 
-        html2canvas: { scale: 3 }, 
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
-    };
-    await html2pdf().set(opt).from(area).save();
-    area.classList.remove('hide-empty');
-}
-
 function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
 function resetPage() { if(confirm("بدء يوم جديد؟ سيتم مسح كافة الأسماء.")) { localStorage.clear(); location.reload(); } }
 
