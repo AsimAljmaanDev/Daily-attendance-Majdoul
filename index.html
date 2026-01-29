@@ -8,101 +8,101 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <style>
-    .temp-text {
-    display: block;
-    width: 100%;
-    text-align: center;
-    font-size: 10.5px;
-    color: #000;
+	.temp-text {
+	display: block;
+	width: 100%;
+	text-align: center;
+	font-size: 10.5px;
+	color: #000;
 }
 /* Base Variables & Dark Mode */
 :root { 
-    --primary: #c7a35a; 
-    --secondary: #1e293b;
-    --bg-page: #f1f5f9;
-    --card-bg: #ffffff;
-    --text-main: #333;
-    --glass-bg: rgba(255, 255, 255, 0.2); /* Light glass */
-    --glass-border: rgba(255, 255, 255, 0.3);
-    --glass-shadow: rgba(0, 0, 0, 0.1);
+	--primary: #c7a35a; 
+	--secondary: #1e293b;
+	--bg-page: #f1f5f9;
+	--card-bg: #ffffff;
+	--text-main: #333;
+	--glass-bg: rgba(255, 255, 255, 0.2); /* Light glass */
+	--glass-border: rgba(255, 255, 255, 0.3);
+	--glass-shadow: rgba(0, 0, 0, 0.1);
 }
 
 body.dark-mode {
-    --bg-page: #0f172a;
-    --card-bg: #1e293b;
-    --text-main: #e2e8f0;
-    --glass-bg: rgba(255, 255, 255, 0.05); /* Dark glass */
-    --glass-border: rgba(255, 255, 255, 0.1);
-    --glass-shadow: rgba(0, 0, 0, 0.3);
+	--bg-page: #0f172a;
+	--card-bg: #1e293b;
+	--text-main: #e2e8f0;
+	--glass-bg: rgba(255, 255, 255, 0.05); /* Dark glass */
+	--glass-border: rgba(255, 255, 255, 0.1);
+	--glass-shadow: rgba(0, 0, 0, 0.3);
 }
 
 body { 
-    font-family: 'Segoe UI', Tahoma, sans-serif; 
-    background-color: var(--bg-page); 
-    margin: 0; 
-    transition: background-color 0.3s ease, color 0.3s ease;
-    color: var(--text-main);
+	font-family: 'Segoe UI', Tahoma, sans-serif; 
+	background-color: var(--bg-page); 
+	margin: 0; 
+	transition: background-color 0.3s ease, color 0.3s ease;
+	color: var(--text-main);
 }
 
 /* Liquid Glass Sidebar Design */
 .sidebar {
-    position: fixed; 
-    left: 20px; 
-    top: 50%; 
-    transform: translateY(-50%);
-    background: var(--glass-bg); /* Use glass background */
-    backdrop-filter: blur(10px); /* Glass blur effect */
-    border: 1px solid var(--glass-border); /* Subtle border */
-    border-radius: 20px;
-    padding: 15px; 
-    box-shadow: 0 10px 30px var(--glass-shadow); /* Soft shadow */
-    display: flex; 
-    flex-direction: column; 
-    gap: 10px; /* Increased gap for better spacing */
-    z-index: 999; 
-    width: 180px; /* Slightly wider for better button fit */
-    transition: all 0.3s ease;
+	position: fixed; 
+	left: 20px; 
+	top: 50%; 
+	transform: translateY(-50%);
+	background: var(--glass-bg); /* Use glass background */
+	backdrop-filter: blur(10px); /* Glass blur effect */
+	border: 1px solid var(--glass-border); /* Subtle border */
+	border-radius: 20px;
+	padding: 15px; 
+	box-shadow: 0 10px 30px var(--glass-shadow); /* Soft shadow */
+	display: flex; 
+	flex-direction: column; 
+	gap: 10px; /* Increased gap for better spacing */
+	z-index: 999; 
+	width: 180px; /* Slightly wider for better button fit */
+	transition: all 0.3s ease;
 }
 
 .sidebar.mobile-view {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    top: unset; /* Override top:50% */
-    width: 90%; /* Wider on mobile */
-    flex-direction: row; /* Horizontal layout for mobile */
-    flex-wrap: wrap; /* Allow buttons to wrap */
-    justify-content: center;
-    padding: 10px;
+	position: fixed;
+	bottom: 20px;
+	left: 50%;
+	transform: translateX(-50%);
+	top: unset; /* Override top:50% */
+	width: 90%; /* Wider on mobile */
+	flex-direction: row; /* Horizontal layout for mobile */
+	flex-wrap: wrap; /* Allow buttons to wrap */
+	justify-content: center;
+	padding: 10px;
 }
 
 /* Liquid Glass Buttons Design */
 .btn {
-    border: none; 
-    padding: 12px; /* Slightly larger padding */
-    border-radius: 12px; /* More rounded corners */
-    cursor: pointer;
-    font-weight: 600; 
-    font-size: 12px; /* Slightly larger font */
-    color: white; 
-    transition: all 0.2s ease;
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    gap: 8px; /* Increased gap for icon and text */
-    background: rgba(var(--btn-color), 0.7); /* Semi-transparent color */
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1); /* Subtle button shadow */
-    backdrop-filter: blur(5px); /* Apply blur to button */
+	border: none; 
+	padding: 12px; /* Slightly larger padding */
+	border-radius: 12px; /* More rounded corners */
+	cursor: pointer;
+	font-weight: 600; 
+	font-size: 12px; /* Slightly larger font */
+	color: white; 
+	transition: all 0.2s ease;
+	display: flex; 
+	align-items: center; 
+	justify-content: center; 
+	gap: 8px; /* Increased gap for icon and text */
+	background: rgba(var(--btn-color), 0.7); /* Semi-transparent color */
+	box-shadow: 0 4px 10px rgba(0,0,0,0.1); /* Subtle button shadow */
+	backdrop-filter: blur(5px); /* Apply blur to button */
 }
 .btn:hover { 
-    transform: translateY(-2px) scale(1.02); /* Lift and slightly scale on hover */
-    opacity: 1; 
-    box-shadow: 0 6px 15px rgba(0,0,0,0.2); /* More prominent shadow on hover */
+	transform: translateY(-2px) scale(1.02); /* Lift and slightly scale on hover */
+	opacity: 1; 
+	box-shadow: 0 6px 15px rgba(0,0,0,0.2); /* More prominent shadow on hover */
 }
 .btn:active {
-    transform: translateY(0) scale(0.98);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+	transform: translateY(0) scale(0.98);
+	box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 .btn-image { --btn-color: 99, 102, 241; /* Indigo */ background: rgba(99, 102, 241, 0.7); }
@@ -114,39 +114,39 @@ body {
 
 
 .date-input { 
-    padding: 10px; 
-    border: 1px solid var(--glass-border); /* Glassy border */
-    border-radius: 10px; 
-    width: 100%; 
-    box-sizing: border-box; 
-    background: rgba(255, 255, 255, 0.1); /* Slightly transparent input */
-    color: var(--text-main); 
-    font-size: 12px;
-    transition: all 0.2s ease;
+	padding: 10px; 
+	border: 1px solid var(--glass-border); /* Glassy border */
+	border-radius: 10px; 
+	width: 100%; 
+	box-sizing: border-box; 
+	background: rgba(255, 255, 255, 0.1); /* Slightly transparent input */
+	color: var(--text-main); 
+	font-size: 12px;
+	transition: all 0.2s ease;
 }
 .date-input:focus {
-    border-color: var(--primary);
-    box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.2);
+	border-color: var(--primary);
+	box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.2);
 }
 
 /* Page Container (unchanged, but ensuring it sits well with new sidebar) */
 .page-container {
-    width: 210mm;
-    min-height: 297mm;
-    margin: 10px auto;
-    background: white !important; /* Keep white for print/PDF consistency */
-    padding: 8mm 12mm;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 0 20px rgba(0,0,0,0.05);
-    transition: margin-right 0.3s ease; /* For mobile view shift */
+	width: 210mm;
+	min-height: 297mm;
+	margin: 10px auto;
+	background: white !important; /* Keep white for print/PDF consistency */
+	padding: 8mm 12mm;
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	box-shadow: 0 0 20px rgba(0,0,0,0.05);
+	transition: margin-right 0.3s ease; /* For mobile view shift */
 }
 
 /* Adjust page container margin when sidebar is on mobile */
 .mobile-view-active .page-container {
-    margin-top: 100px; /* Make space for mobile sidebar at bottom */
-    margin-bottom: 100px;
+	margin-top: 100px; /* Make space for mobile sidebar at bottom */
+	margin-bottom: 100px;
 }
 
 
@@ -160,14 +160,14 @@ th { background: #f8fafc; padding: 6px; border: 1px solid #000; color: #000; }
 td { border: 1px solid #000; padding: 3px; text-align: center; height: 16px; color: #000; }
 
 .name-input {
-    width: 100%;
-    border: none;
-    background: transparent;
-    font-family: inherit;
-    font-size: 10.5px;
-    font-weight: 600;
-    text-align: center;
-    outline: none;
+	width: 100%;
+	border: none;
+	background: transparent;
+	font-family: inherit;
+	font-size: 10.5px;
+	font-weight: 600;
+	text-align: center;
+	outline: none;
 }
 
 .morning-row.row-filled { background-color: #fff9c4 !important; } 
@@ -175,13 +175,13 @@ td { border: 1px solid #000; padding: 3px; text-align: center; height: 16px; col
 
 .hide-empty .morning-row:not(.row-filled),
 .hide-empty .evening-row:not(.row-filled) {
-    display: none;
+	display: none;
 }
 
 .summary-container { display: flex; justify-content: space-between; gap: 10px; margin-top: 5px; }
 .sum-box { 
-    flex: 1; padding: 10px; border-radius: 12px; text-align: center;
-    background: #f8fafc; border: 1px solid #ddd;
+	flex: 1; padding: 10px; border-radius: 12px; text-align: center;
+	background: #f8fafc; border: 1px solid #ddd;
 }
 .sum-label { display: block; font-size: 10px; color: #64748b; font-weight: bold; }
 .sum-val { font-size: 14px; font-weight: 800; direction: ltr; display: inline-block; color: #000; }
@@ -193,18 +193,18 @@ td { border: 1px solid #000; padding: 3px; text-align: center; height: 16px; col
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-    .sidebar:not(.mobile-view) { /* Hide desktop sidebar when screen is small, unless mobile view is active */
-        display: none;
-    }
-    .sidebar.mobile-view {
-        display: flex; /* Always show mobile sidebar when active */
-    }
-    .page-container {
-        width: 95%; /* Make page wider on small screens */
-        padding: 5mm;
-        margin-left: auto;
-        margin-right: auto;
-    }
+	.sidebar:not(.mobile-view) { /* Hide desktop sidebar when screen is small, unless mobile view is active */
+		display: none;
+	}
+	.sidebar.mobile-view {
+		display: flex; /* Always show mobile sidebar when active */
+	}
+	.page-container {
+		width: 95%; /* Make page wider on small screens */
+		padding: 5mm;
+		margin-left: auto;
+		margin-right: auto;
+	}
 }
 </style>
 </head>
@@ -213,234 +213,255 @@ td { border: 1px solid #000; padding: 3px; text-align: center; height: 16px; col
 <datalist id="namesList"></datalist>
 
 <div class="sidebar" data-html2canvas-ignore="true">
-    <input type="date" id="dateInput" class="date-input" onchange="updateDate()">
-    <button class="btn btn-image" onclick="captureImage()">📸 صورة (الحاضرين فقط)</button>
-    <button class="btn btn-pdf" onclick="generatePDF()">📄 PDF (الحاضرين فقط)</button>
-    <button class="btn btn-excel" onclick="exportExcel()">📊 ملف Excel</button>
-    <button class="btn btn-dark" onclick="toggleDarkMode()">🌙 وضع ليلي</button>
-    <button class="btn btn-toggle-view" onclick="toggleMobileView()">📱 وضع الجوال</button>
-    <button class="btn btn-new" onclick="resetPage()">🔄 يوم جديد</button>
+	<input type="date" id="dateInput" class="date-input" onchange="updateDate()">
+	<button class="btn btn-image" onclick="captureImage()">📸 صورة (الحاضرين فقط)</button>
+	<button class="btn btn-pdf" onclick="generatePDF()">📄 PDF (الحاضرين فقط)</button>
+	<button class="btn btn-excel" onclick="exportExcel()">📊 ملف Excel</button>
+	<button class="btn btn-dark" onclick="toggleDarkMode()">🌙 وضع ليلي</button>
+	<button class="btn btn-toggle-view" onclick="toggleMobileView()">📱 وضع الجوال</button>
+	<button class="btn btn-new" onclick="resetPage()">🔄 يوم جديد</button>
 </div>
 
 <div class="page-container" id="printableArea">
-    <div class="header">
-        <img src="majdoul.png" alt="Logo">
-        <div class="header-center">
-            <h2>LINK EXPERT COMPANY</h2>
-            <div style="color: var(--primary); font-weight: bold; font-size: 13px;">Daily Attendance | سجل الحضور اليومي</div>
-            <div class="date-display" id="dateDisplay">-- / -- / ----</div>
-        </div>
-        <img src="linkexpert.png" alt="Logo">
-    </div>
+	<div class="header">
+		<img src="majdoul.png" alt="Logo">
+		<div class="header-center">
+			<h2>LINK EXPERT COMPANY</h2>
+			<div style="color: var(--primary); font-weight: bold; font-size: 13px;">Daily Attendance | سجل الحضور اليومي</div>
+			<div class="date-display" id="dateDisplay">-- / -- / ----</div>
+		</div>
+		<img src="linkexpert.png" alt="Logo">
+	</div>
 
-    <table class="morning">
-        <thead>
-            <tr style="border-top: 3px solid #f59e0b;"><th width="5%">#</th><th>الموقع (صباحاً)</th><th width="45%">الاسم</th><th width="15%">الوردية</th></tr>
-        </thead>
-        <tbody id="morningBody"></tbody>
-        <tr style="background:#fcfcfc; font-weight:bold;">
-            <td colspan="3" style="text-align:left; padding-left:10px;">Total Morning:</td>
-            <td id="mCount" style="direction:ltr;">0 / 19</td>
-        </tr>
-    </table>
+	<table class="morning">
+		<thead>
+			<tr style="border-top: 3px solid #f59e0b;"><th width="5%">#</th><th>الموقع (صباحاً)</th><th width="45%">الاسم</th><th width="15%">الوردية</th></tr>
+		</thead>
+		<tbody id="morningBody"></tbody>
+		<tr style="background:#fcfcfc; font-weight:bold;">
+			<td colspan="3" style="text-align:left; padding-left:10px;">Total Morning:</td>
+			<td id="mCount" style="direction:ltr;">0 / 19</td>
+		</tr>
+	</table>
 
-    <table class="evening">
-        <thead>
-            <tr style="border-top: 3px solid #3b82f6;"><th width="5%">#</th><th>الموقع (مساءً)</th><th width="45%">الاسم</th><th width="15%">الوردية</th></tr>
-        </thead>
-        <tbody id="eveningBody"></tbody>
-        <tr style="background:#fcfcfc; font-weight:bold;">
-            <td colspan="3" style="text-align:left; padding-left:10px;">Total Evening:</td>
-            <td id="eCount" style="direction:ltr;">0 / 9</td>
-        </tr>
-    </table>
+	<table class="evening">
+		<thead>
+			<tr style="border-top: 3px solid #3b82f6;"><th width="5%">#</th><th>الموقع (مساءً)</th><th width="45%">الاسم</th><th width="15%">الوردية</th></tr>
+		</thead>
+		<tbody id="eveningBody"></tbody>
+		<tr style="background:#fcfcfc; font-weight:bold;">
+			<td colspan="3" style="text-align:left; padding-left:10px;">Total Evening:</td>
+			<td id="eCount" style="direction:ltr;">0 / 9</td>
+		</tr>
+	</table>
 
-    <div class="summary-container">
-        <div class="sum-box"><span class="sum-label">الصباح</span><span class="sum-val" id="sm">0 / 19</span></div>
-        <div class="sum-box"><span class="sum-label">المساء</span><span class="sum-val" id="se">0 / 9</span></div>
-        <div class="sum-box" style="background: #1e293b;"><span class="sum-label" style="color: #94a3b8;">الإجمالي العام</span><span class="sum-val" id="st" style="color: white;">0 / 28</span></div>
-    </div>
+	<div class="summary-container">
+		<div class="sum-box"><span class="sum-label">الصباح</span><span class="sum-val" id="sm">0 / 19</span></div>
+		<div class="sum-box"><span class="sum-label">المساء</span><span class="sum-val" id="se">0 / 9</span></div>
+		<div class="sum-box" style="background: #1e293b;"><span class="sum-label" style="color: #94a3b8;">الإجمالي العام</span><span class="sum-val" id="st" style="color: white;">0 / 28</span></div>
+	</div>
 
-    <div class="footer">
-        <div class="signature">سلمان الحمود<br><span style="font-size:10px; font-weight:normal;">مسؤول العلاقات العامة</span></div>
-        <div class="signature">سالم الشمري<br><span style="font-size:10px; font-weight:normal;">مدير المشروع</span></div>
-    </div>
+	<div class="footer">
+		<div class="signature">سلمان الحمود<br><span style="font-size:10px; font-weight:normal;">مسؤول العلاقات العامة</span></div>
+		<div class="signature">سالم الشمري<br><span style="font-size:10px; font-weight:normal;">مدير المشروع</span></div>
+	</div>
 </div>
 
 <script>
 // مرجع الأسماء حسب الوظيفة
 const staffDatabase = {
-    "مدير مواقف": ["سالم الشمري"],
-    "تغطيات": ["عاصم الجمعان", "الحذيفي المنير", "منتصر الصديق", "سعد السيد", "محمد رشدي"],
-    "فاليه 1": ["بكر عبدالله", "محمود مالك", "جلال المضلعي", "محمد رشدي", "محمد عشري"],
-    "فاليه 2": ["سعيد شريف", "معاذ عبدالحافظ", "شريف سيف الدين", "ابراهيم موسى"],
-    "فاليه 3 - فحص": ["عاصم الجمعان", "الحذيفي المنير", "عيسى مودي", "زياده عبدالرحيم"],
-    "مسؤول الشحن A": ["عبدالواسع سيد احمد", "سامي جعفر", "محمد عشري"],
-    "مسؤول الشحن P2": ["علاء الدين احمد", "علي قايد"],
-    "منظم بوابة 3": ["محمد ابراهيم", "احمد رشدي", "اسماعيل عبدالرحمن", "جلال المضلعي", "وحيد محمد"],
-    "منظم بوابة 5": ["محمد ابراهيم", "احمد رشدي", "اسماعيل عبدالرحمن", "جلال المضلعي", "وحيد محمد"],
-    "منظم مواقف P1": ["ابراهيم موسى", "عيسى مودي", "اسماعيل عبدالرحمن", "سامي جعفر", "عبدالعزيز محمد", "زياده عبدالرحيم", "سعيد شريف", "شريف سيف الدين"],
-    "منظم مواقف P2": ["ابراهيم موسى", "عيسى مودي", "اسماعيل عبدالرحمن", "سامي جعفر", "عبدالعزيز محمد", "زياده عبدالرحيم", "سعيد شريف", "شريف سيف الدين"],
-    "منظم مواقف P3": ["ابراهيم موسى", "عيسى مودي", "اسماعيل عبدالرحمن", "سامي جعفر", "عبدالعزيز محمد", "زياده عبدالرحيم", "سعيد شريف", "شريف سيف الدين"],
-    "منظم مواقف P4": ["ابراهيم موسى", "عيسى مودي", "اسماعيل عبدالرحمن", "سامي جعفر", "عبدالعزيز محمد", "زياده عبدالرحيم", "سعيد شريف", "شريف سيف الدين"]
+	"مدير مواقف": ["سالم الشمري"],
+	"تغطيات": ["عاصم الجمعان", "الحذيفي المنير", "منتصر الصديق", "سعد السيد", "محمد رشدي"],
+	"فاليه 1": ["بكر عبدالله", "محمود مالك", "جلال المضلعي", "محمد رشدي", "محمد عشري"],
+	"فاليه 2": ["سعيد شريف", "معاذ عبدالحافظ", "شريف سيف الدين", "ابراهيم موسى"],
+	"فاليه 3 - فحص": ["عاصم الجمعان", "الحذيفي المنير", "عيسى مودي", "زياده عبدالرحيم"],
+	"مسؤول الشحن A": ["عبدالواسع سيد احمد", "سامي جعفر", "محمد عشري"],
+	"مسؤول الشحن P2": ["علاء الدين احمد", "علي قايد"],
+	"منظم بوابة 3": ["محمد ابراهيم", "احمد رشدي", "اسماعيل عبدالرحمن", "جلال المضلعي", "وحيد محمد"],
+	"منظم بوابة 5": ["محمد ابراهيم", "احمد رشدي", "اسماعيل عبدالرحمن", "جلال المضلعي", "وحيد محمد"],
+	"منظم مواقف P1": ["ابراهيم موسى", "عيسى مودي", "اسماعيل عبدالرحمن", "سامي جعفر", "عبدالعزيز محمد", "زياده عبدالرحيم", "سعيد شريف", "شريف سيف الدين"],
+	"منظم مواقف P2": ["ابراهيم موسى", "عيسى مودي", "اسماعيل عبدالرحمن", "سامي جعفر", "عبدالعزيز محمد", "زياده عبدالرحيم", "سعيد شريف", "شريف سيف الدين"],
+	"منظم مواقف P3": ["ابراهيم موسى", "عيسى مودي", "اسماعيل عبدالرحمن", "سامي جعفر", "عبدالعزيز محمد", "زياده عبدالرحيم", "سعيد شريف", "شريف سيف الدين"],
+	"منظم مواقف P4": ["ابراهيم موسى", "عيسى مودي", "اسماعيل عبدالرحمن", "سامي جعفر", "عبدالعزيز محمد", "زياده عبدالرحيم", "سعيد شريف", "شريف سيف الدين"]
 };
 
 const morningJobs = ["مدير مواقف","تغطيات","تغطيات","فاليه 1","فاليه 1","فاليه 2","فاليه 3 - فحص","مسؤول الشحن A","مسؤول الشحن P2","منظم بوابة 3","منظم بوابة 5","منظم مواقف P1","منظم مواقف P1","منظم مواقف P1","منظم مواقف P2","منظم مواقف P2","منظم مواقف P2","منظم مواقف P3","منظم مواقف P4"];
 const eveningJobs = ["تغطيات","فاليه 1","فاليه 2","مسؤول الشحن A","مسؤول الشحن P2","منظم بوابة 3","منظم بوابة 5","منظم مواقف P1","منظم مواقف P3"];
 
 window.onload = function() {
-    render(); load();
-    if(!document.getElementById('dateInput').value) { document.getElementById('dateInput').valueAsDate = new Date(); updateDate(); }
-    // Check initial screen size and apply mobile view if needed
-    if (window.innerWidth <= 768) {
-        document.body.classList.add('mobile-view-active');
-        document.querySelector('.sidebar').classList.add('mobile-view');
-        document.querySelector('.btn-toggle-view').innerHTML = '💻 وضع سطح المكتب';
-    }
+	render(); load();
+	if(!document.getElementById('dateInput').value) { document.getElementById('dateInput').valueAsDate = new Date(); updateDate(); }
+	// Check initial screen size and apply mobile view if needed
+	if (window.innerWidth <= 768) {
+		document.body.classList.add('mobile-view-active');
+		document.querySelector('.sidebar').classList.add('mobile-view');
+		document.querySelector('.btn-toggle-view').innerHTML = '💻 وضع سطح المكتب';
+	}
 };
 
 function render() {
-    let m = "", e = "";
-    morningJobs.forEach((j, i) => m += createRow(j, i, 'm', '7 AM'));
-    eveningJobs.forEach((j, i) => e += createRow(j, i, 'e', '7 PM'));
-    document.getElementById('morningBody').innerHTML = m;
-    document.getElementById('eveningBody').innerHTML = e;
+	let m = "", e = "";
+	morningJobs.forEach((j, i) => m += createRow(j, i, 'm', '7 AM'));
+	eveningJobs.forEach((j, i) => e += createRow(j, i, 'e', '7 PM'));
+	document.getElementById('morningBody').innerHTML = m;
+	document.getElementById('eveningBody').innerHTML = e;
 }
 
 function createRow(job, index, type, shift) {
-    return `<tr class="${type === 'm' ? 'morning-row' : 'evening-row'}">
-        <td>${index + 1}</td>
-        <td class="job-cell">${job}</td>
-        <td>
-            <input list="namesList" class="name-input" 
-                   onfocus="updateDatalist('${job}')" 
-                   oninput="save(this,'${type}',${index})" 
-                   placeholder="اختر أو اكتب...">
-        </td>
-        <td>${shift}</td>
-    </tr>`;
+	return `<tr class="${type === 'm' ? 'morning-row' : 'evening-row'}">
+		<td>${index + 1}</td>
+		<td class="job-cell">${job}</td>
+		<td>
+			<input list="namesList" class="name-input" 
+				   onfocus="updateDatalist('${job}')" 
+				   oninput="save(this,'${type}',${index})" 
+				   placeholder="اختر أو اكتب...">
+		</td>
+		<td>${shift}</td>
+	</tr>`;
 }
 
 // تحديث قائمة الخيارات بناءً على الوظيفة عند الضغط على الخلية
 function updateDatalist(jobName) {
-    const list = document.getElementById('namesList');
-    list.innerHTML = "";
-    const names = staffDatabase[jobName] || [];
-    names.forEach(name => {
-        let opt = document.createElement('option');
-        opt.value = name;
-        list.appendChild(opt);
-    });
+	const list = document.getElementById('namesList');
+	list.innerHTML = "";
+	const names = staffDatabase[jobName] || [];
+	names.forEach(name => {
+		let opt = document.createElement('option');
+		opt.value = name;
+		list.appendChild(opt);
+	});
 }
 
 function updateDate() {
-    const v = document.getElementById('dateInput').value;
-    if(v) {
-        const d = new Date(v);
-        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        document.getElementById('dateDisplay').innerText = d.toLocaleDateString('en-US', options);
-        localStorage.setItem('le_d', v);
-    }
+	const v = document.getElementById('dateInput').value;
+	if(v) {
+		const d = new Date(v);
+		const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+		document.getElementById('dateDisplay').innerText = d.toLocaleDateString('en-US', options);
+		localStorage.setItem('le_d', v);
+	}
 }
 
 function save(input, t, i) {
-    const val = input.value.trim();
-    val ? input.parentElement.parentElement.classList.add('row-filled') : input.parentElement.parentElement.classList.remove('row-filled');
-    localStorage.setItem(`le_${t}_${i}`, val);
-    calc();
+	const val = input.value.trim();
+	val ? input.parentElement.parentElement.classList.add('row-filled') : input.parentElement.parentElement.classList.remove('row-filled');
+	localStorage.setItem(`le_${t}_${i}`, val);
+	calc();
 }
 
 function calc() {
-    const m = document.querySelectorAll('#morningBody .row-filled').length;
-    const e = document.querySelectorAll('#eveningBody .row-filled').length;
-    document.getElementById('mCount').innerText = `${m} / 19`;
-    document.getElementById('eCount').innerText = `${e} / 9`;
-    document.getElementById('sm').innerText = `${m} / 19`;
-    document.getElementById('se').innerText = `${e} / 9`;
-    document.getElementById('st').innerText = `${m+e} / 28`;
+	const m = document.querySelectorAll('#morningBody .row-filled').length;
+	const e = document.querySelectorAll('#eveningBody .row-filled').length;
+	document.getElementById('mCount').innerText = `${m} / 19`;
+	document.getElementById('eCount').innerText = `${e} / 9`;
+	document.getElementById('sm').innerText = `${m} / 19`;
+	document.getElementById('se').innerText = `${e} / 9`;
+	document.getElementById('st').innerText = `${m+e} / 28`;
 }
 
 function load() {
-    const d = localStorage.getItem('le_d');
-    if(d) { document.getElementById('dateInput').value = d; updateDate(); }
-    
-    document.querySelectorAll('.name-input').forEach((input, i) => {
-        const isMorning = input.closest('tbody').id === 'morningBody';
-        const type = isMorning ? 'm' : 'e';
-        const rows = Array.from(input.closest('tbody').querySelectorAll('.name-input'));
-        const idx = rows.indexOf(input);
-        const v = localStorage.getItem(`le_${type}_${idx}`);
-        if(v) { 
-            input.value = v; 
-            input.parentElement.parentElement.classList.add('row-filled'); 
-        }
-    });
-    calc();
+	const d = localStorage.getItem('le_d');
+	if(d) { document.getElementById('dateInput').value = d; updateDate(); }
+	
+	document.querySelectorAll('.name-input').forEach((input, i) => {
+		const isMorning = input.closest('tbody').id === 'morningBody';
+		const type = isMorning ? 'm' : 'e';
+		const rows = Array.from(input.closest('tbody').querySelectorAll('.name-input'));
+		const idx = rows.indexOf(input);
+		const v = localStorage.getItem(`le_${type}_${idx}`);
+		if(v) { 
+			input.value = v; 
+			input.parentElement.parentElement.classList.add('row-filled'); 
+		}
+	});
+	calc();
 }
 
 async function captureImage() {
-    const area = document.getElementById('printableArea');
-    
-    // 1. وضع علامة "إخفاء الفارغ" وتحويل المدخلات لنص ثابت مؤقتاً
-    area.classList.add('hide-empty');
-    const inputs = area.querySelectorAll('.name-input');
-    inputs.forEach(input => {
-        const span = document.createElement('span');
-        span.className = 'temp-text';
-        span.innerText = input.value;
-        span.style.fontWeight = '600';
-        input.style.display = 'none';
-        input.parentNode.appendChild(span);
-    });
+	const area = document.getElementById('printableArea');
+	
+	// 1. إخفاء الصفوف الفارغة وتحويل المدخلات لنص
+	area.classList.add('hide-empty');
+	const inputs = area.querySelectorAll('.name-input');
+	inputs.forEach(input => {
+		const span = document.createElement('span');
+		span.className = 'temp-text';
+		span.innerText = input.value;
+		span.style.fontWeight = '600';
+		input.style.display = 'none';
+		input.parentNode.appendChild(span);
+	});
 
-    // 2. عملية الالتقاط
-    html2canvas(area, { 
-        scale: 3, // زيادة الدقة لضمان الوضوح
-        useCORS: true,
-        backgroundColor: "#ffffff" 
-    }).then(canvas => {
-        const link = document.createElement('a');
-        link.download = `Attendance_${document.getElementById('dateInput').value}.png`;
-        link.href = canvas.toDataURL("image/png");
-        link.click();
+	// 2. عملية الالتقاط بدقة عالية
+	try {
+		const canvas = await html2canvas(area, { 
+			scale: 3, 
+			useCORS: true,
+			backgroundColor: "#ffffff",
+			logging: false // لتقليل استهلاك الذاكرة
+		});
 
-        // 3. إعادة الحقول كما كانت
-        area.classList.remove('hide-empty');
-        area.querySelectorAll('.temp-text').forEach(el => el.remove());
-        inputs.forEach(input => input.style.display = 'block');
-    });
+		// 3. طريقة تحميل متوافقة مع المتصفحات الحديثة
+		const fileName = `Attendance_${document.getElementById('dateInput').value || 'Daily'}.png`;
+		
+		// تحويل الـ Canvas إلى Blob بدلاً من DataURL (أكثر استقراراً للملفات الكبيرة)
+		canvas.toBlob(function(blob) {
+			const url = URL.createObjectURL(blob);
+			const link = document.createElement('a');
+			link.href = url;
+			link.download = fileName;
+			
+			// إضافة الرابط للمستند مؤقتاً لتفعيل النقر في بعض المتصفحات
+			document.body.appendChild(link);
+			link.click();
+			document.body.removeChild(link);
+			
+			// تحرير الذاكرة
+			URL.revokeObjectURL(url);
+		}, 'image/png');
+
+	} catch (error) {
+		console.error("خطأ في التقاط الصورة:", error);
+		alert("حدث خطأ أثناء حفظ الصورة، يرجى المحاولة مرة أخرى.");
+	} finally {
+		// 4. إعادة الحقول كما كانت في كل الأحوال
+		area.classList.remove('hide-empty');
+		area.querySelectorAll('.temp-text').forEach(el => el.remove());
+		inputs.forEach(input => input.style.display = 'block');
+	}
 }
 function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
 function resetPage() { if(confirm("بدء يوم جديد؟ سيتم مسح كافة الأسماء.")) { localStorage.clear(); location.reload(); } }
 
 function exportExcel() {
-    let csv = "\ufeff# , الموقع , الاسم , الفترة\n";
-    document.querySelectorAll('.row-filled').forEach(tr => {
-        const tds = tr.querySelectorAll('td');
-        const nameVal = tr.querySelector('.name-input').value;
-        csv += `${tds[0].innerText},${tds[1].innerText},${nameVal},${tds[3].innerText}\n`;
-    });
-    const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = "Attendance.csv";
-    a.click();
+	let csv = "\ufeff# , الموقع , الاسم , الفترة\n";
+	document.querySelectorAll('.row-filled').forEach(tr => {
+		const tds = tr.querySelectorAll('td');
+		const nameVal = tr.querySelector('.name-input').value;
+		csv += `${tds[0].innerText},${tds[1].innerText},${nameVal},${tds[3].innerText}\n`;
+	});
+	const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+	const a = document.createElement('a');
+	a.href = URL.createObjectURL(blob);
+	a.download = "Attendance.csv";
+	a.click();
 }
 
 // Function to toggle between mobile and desktop view
 function toggleMobileView() {
-    const body = document.body;
-    const sidebar = document.querySelector('.sidebar');
-    const toggleButton = document.querySelector('.btn-toggle-view');
+	const body = document.body;
+	const sidebar = document.querySelector('.sidebar');
+	const toggleButton = document.querySelector('.btn-toggle-view');
 
-    body.classList.toggle('mobile-view-active');
-    sidebar.classList.toggle('mobile-view');
+	body.classList.toggle('mobile-view-active');
+	sidebar.classList.toggle('mobile-view');
 
-    if (body.classList.contains('mobile-view-active')) {
-        toggleButton.innerHTML = '💻 وضع سطح المكتب';
-    } else {
-        toggleButton.innerHTML = '📱 وضع الجوال';
-    }
+	if (body.classList.contains('mobile-view-active')) {
+		toggleButton.innerHTML = '💻 وضع سطح المكتب';
+	} else {
+		toggleButton.innerHTML = '📱 وضع الجوال';
+	}
 }
 </script>
 </body>
